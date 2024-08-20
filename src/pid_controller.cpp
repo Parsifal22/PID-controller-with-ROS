@@ -28,7 +28,7 @@ PidController::PidController()
 
   kp = std::make_pair(0.2, 0.93);
   ki = std::make_pair(0.001, 0.0001);
-  kd = std::make_pair(0.1, 1.7);
+  kd = std::make_pair(0.1, 1.5);
 
   angel_integral = 0.0;
   distance_integral = 0.0;
