@@ -4,10 +4,10 @@ PidController::PidController()
 {
 
     // initialize publishers
-  cmd_vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 10);
+  cmd_vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
   // initialize subscribers
-  odom_sub_ = n.subscribe("odom", 10, &PidController::odomMsgCallBack, this);
+  odom_sub_ = n.subscribe("odom", 1, &PidController::odomMsgCallBack, this);
 
   // Add target points to list
   target_points.push_back(std::make_pair(2.0, 1.0));
@@ -28,7 +28,7 @@ PidController::PidController()
 
   kp = std::make_pair(0.2, 0.93);
   ki = std::make_pair(0.001, 0.0001);
-  kd = std::make_pair(0.1, 1.5);
+  kd = std::make_pair(0.1, 2.0);
 
   angel_integral = 0.0;
   distance_integral = 0.0;
