@@ -1,6 +1,6 @@
-#PID controller for ROS project
+# PID controller for ROS project
 
-##Requirements
+## Requirements
 - Ubuntu 20 LTS
 - ROS Noetic
 
