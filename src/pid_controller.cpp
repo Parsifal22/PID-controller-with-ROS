@@ -4,10 +4,10 @@ PidController::PidController()
 {
 
     // initialize publishers
-  cmd_vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+  cmd_vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 10);
 
   // initialize subscribers
-  odom_sub_ = n.subscribe("odom", 1, &PidController::odomMsgCallBack, this);
+  odom_sub_ = n.subscribe("odom", 10, &PidController::odomMsgCallBack, this);
 
   // Add target points to list
   target_points.push_back(std::make_pair(2.0, 1.0));
@@ -18,17 +18,15 @@ PidController::PidController()
   target_points.push_back(std::make_pair(7.0, 2.0));
   target_points.push_back(std::make_pair(8.0, -1.0));
   target_points.push_back(std::make_pair(7.0, -4.0));
-  target_points.push_back(std::make_pair(5.0, -3.0));
-  target_points.push_back(std::make_pair(3.0, 0.0));
-  target_points.push_back(std::make_pair(1.0, 1.0));
-  target_points.push_back(std::make_pair(-2.0, 2.0));
-  target_points.push_back(std::make_pair(-3.0, 2.0));
-  target_points.push_back(std::make_pair(-2.0, 1.0));
+  target_points.push_back(std::make_pair(4.0, -5.0));
+  target_points.push_back(std::make_pair(3.0, -4.0));
+  target_points.push_back(std::make_pair(2.0, -3.0));
+  target_points.push_back(std::make_pair(-1.0, 1.0));
   target_points.push_back(std::make_pair(0.0, 0.0));
 
   kp = std::make_pair(0.2, 0.93);
-  ki = std::make_pair(0.001, 0.0001);
-  kd = std::make_pair(0.1, 2.0);
+  ki = std::make_pair(0.01, 0.001);
+  kd = std::make_pair(0.3, 2.0);
 
   angel_integral = 0.0;
   distance_integral = 0.0;
@@ -72,7 +70,7 @@ bool PidController::controlLoop()
   //ROS_INFO("Current position y: %lf", y_position);
 
   calculate_distance_and_angle();
- // ROS_INFO("Target points: %f %f", target_points.front().first, target_points.front().second);
+  //ROS_INFO("Target points: %f %f", target_points.front().first, target_points.front().second);
 
   if (distance < 0.5) {
     
@@ -89,7 +87,7 @@ bool PidController::controlLoop()
   double angular_velocity = 0.0;
 
   if(target_points.size() > 0) {
-   // ROS_INFO("Distance of waypoint: %lf", distance);
+   //ROS_INFO("Distance of waypoint: %lf", distance);
     
     linear_velocity = pid_controller_distance();
     angular_velocity = pid_controller_angle();
@@ -107,9 +105,9 @@ double PidController::pid_controller_angle() {
   double error = angle - target_angel;
   //ROS_INFO("Angle of waypoint %lf", error);
   angel_integral += error;
-  double derivative = abs(error) - abs(prev_error_angle);
+  double derivative = error - prev_error_angle;
 
-  if (angel_integral > 3) {angel_integral = 0;}
+  if (angel_integral > 1) {angel_integral = 0;}
   prev_error_angle = error;
   return kp.second * error + kd.second * derivative + ki.second * angel_integral;
 }
@@ -120,7 +118,7 @@ double PidController::pid_controller_distance() {
   // Calculate errors
   double error = distance;
   distance_integral += error;
-  double derivative = abs(error) - abs(prev_error_distance);
+  double derivative = error - prev_error_distance;
   prev_error_distance = error;
   if (distance_integral > 3) {distance_integral = 0;}
   return  kp.first * error + kd.first * derivative + ki.first * distance_integral;
