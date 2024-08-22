@@ -7,6 +7,7 @@
 class PidController {
 
 public:
+    // Public Methodes
     PidController();
     ~PidController();
     bool controlLoop();
@@ -34,9 +35,9 @@ private:
     int global_index;
 
     // Private Methodes
-    void calculate_distance_and_angle();
+    void calculateDistanceAngle();
     void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
     void updatecommandVelocity(double linear, double angular);
-    double pid_controller_distance();
-    double pid_controller_angle();
+    double pidControllerDistance();
+    double pidControllerAngle();
 };
